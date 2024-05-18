@@ -53,20 +53,8 @@ namespace Control_Station
             groupBox1 .Visible = true;  
             try
             {
-               
                 string message = "UPDATE";
-                if (label17.Text == "True")
-                {
-                    string movmessage = "FORWARD";
-                    SendJsonCommand(message, movmessage, 40, 3, 0);
-                }
-                else
-                {
-                    string movmessage = "NOMOVE";
-                    SendJsonCommand(message, movmessage, 0, 0, 0);
-                }
-                
-                
+                SendJsonCommand(message, "NOMOVE", 0, 0, 0);
                 ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
                 //byte[] data = Encoding.ASCII.GetBytes(message);
                 //client.Send(data, data.Length, ip);
@@ -105,21 +93,9 @@ namespace Control_Station
             client.Send(data, data.Length, ip);
         }
 
-        public void btnForward_Click(object sender, EventArgs e)
+        private void btnForward_Click(object sender, EventArgs e)
         {
-            if (label17.Text == "True")
-            {
-                timer3.Enabled = false;
-                timer3.Stop();
-
-            }
-            else
-            {
-                timer3.Enabled=false;
-                timer3.Stop();
-            }
             
-
             try
             {
                 string message = "FORWARD";
@@ -127,7 +103,7 @@ namespace Control_Station
                 ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
                 //byte[] data = Encoding.ASCII.GetBytes(message);
                 //client.Send(data, data.Length, ip);
-                SendJsonCommand("UPDATE", message, 40, 3, 0);
+                SendJsonCommand("UPDATE", message, 40, 8, 0);
                 label11.Text = "menese gtten fw";
                 label12.Text= message;
             }
@@ -148,7 +124,7 @@ namespace Control_Station
             try
             {
                 string message = "BACKWARD";
-                SendJsonCommand("UPDATE", message, 40, 3, 0);
+                SendJsonCommand("UPDATE", message, 40, 8, 0);
                 label11.Text = "menese gtten bw";
                 label12.Text= message;
             }
@@ -245,12 +221,7 @@ namespace Control_Station
             label15.Invoke((MethodInvoker)(() => label15.Text = value_5));
 
         }
-        void f7(string value_6)
-        {
-            label15.Invoke((MethodInvoker)(() => label17.Text = value_6));
-
-        }
-        public void ListenForData()
+        private void ListenForData()
         {
             try
             {
@@ -278,8 +249,6 @@ namespace Control_Station
                 Invoke(new Action(() => f4(sensorData.ultrasonic3.ToString())));
                 Invoke(new Action(() => f5(sensorData.cpuTemperature.ToString())));
                 Invoke(new Action(() => f6(sensorData.randomValue.ToString())));
-                Invoke(new Action(() => f7(sensorData.acknowledge.ToString())));
-
 
                 //// Alınan veriyi sıfırlama
                 Array.Clear(receive, 0, receive.Length);
@@ -338,39 +307,6 @@ namespace Control_Station
             client.Send(data, data.Length, ip);
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            
-
-            try
-            {
-                string message = "FORWARD";
-
-                ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
-                //byte[] data = Encoding.ASCII.GetBytes(message);
-                //client.Send(data, data.Length, ip);
-                SendJsonCommand("UPDATE", message, 40, 8, 0);
-                label11.Text = "menese gtten fw";
-                label12.Text = message;
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "FORWARD ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
-        }
-
-        private void timer3_Tick_1(object sender, EventArgs e)
-        {
-            btnForward.PerformClick();
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-
-        }
-
 
 
 
@@ -380,7 +316,7 @@ namespace Control_Station
         //##################                                    KEYBOARD CONTROL                                        #####################
         //###################################################################################################################################
         //###################################################################################################################################
-
+        
     }
     public class SensorData
     {
@@ -390,7 +326,6 @@ namespace Control_Station
         public int ultrasonic3 { get; set; }
         public int cpuTemperature { get; set; }
         public int randomValue {  get; set; } 
-        public bool acknowledge { get; set; }
     }
     public class RoverCommand
     {
