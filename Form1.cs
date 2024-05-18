@@ -58,8 +58,7 @@ namespace Control_Station
                 ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
                 //byte[] data = Encoding.ASCII.GetBytes(message);
                 //client.Send(data, data.Length, ip);
-                label11.Text = "menese gtten update";
-                label12.Text = message;
+               
             }
             catch (Exception err)
             {
@@ -104,8 +103,7 @@ namespace Control_Station
                 //byte[] data = Encoding.ASCII.GetBytes(message);
                 //client.Send(data, data.Length, ip);
                 SendJsonCommand("UPDATE", message, 40, 8, 0);
-                label11.Text = "menese gtten fw";
-                label12.Text= message;
+               
             }
             catch (Exception err)
             {
@@ -125,8 +123,7 @@ namespace Control_Station
             {
                 string message = "BACKWARD";
                 SendJsonCommand("UPDATE", message, 40, 8, 0);
-                label11.Text = "menese gtten bw";
-                label12.Text= message;
+                
             }
             catch (Exception err)
             {
@@ -147,8 +144,7 @@ namespace Control_Station
             {
                 string message = "STOP";
                 SendData(message);
-                label11.Text = "menese gtten stop";
-                label12.Text= message;
+               
             }
             catch (Exception err)
             {
@@ -164,9 +160,8 @@ namespace Control_Station
             try
             {
                 string message = "LEFT";
-                SendJsonCommand("UPDATE", message, 50, 0, 200);
-                label11.Text = "menese gtten left";
-                label12.Text = message;
+                SendJsonCommand("UPDATE", message, 50, 0, 100);
+                
             }
             catch (Exception err)
             {
@@ -182,9 +177,9 @@ namespace Control_Station
             try
             {
                 string message = "RIGHT";
-                SendJsonCommand("UPDATE", message, 50, 0, 200);
-                label11.Text = "menese gtten right";
-                label12.Text = message;
+                SendJsonCommand("UPDATE", message, 50, 0, 100);
+
+                
             }
             catch (Exception err)
             {
@@ -234,8 +229,8 @@ namespace Control_Station
                 byte[] receive = client.Receive(ref ip);
 
                 string jsonData = Encoding.UTF8.GetString(receive);
-
-
+                //NetworkStream stream = client.
+                
                 
 
                 SensorData sensorData = JsonConvert.DeserializeObject<SensorData>(jsonData);
@@ -250,6 +245,12 @@ namespace Control_Station
                 Invoke(new Action(() => f5(sensorData.cpuTemperature.ToString())));
                 Invoke(new Action(() => f6(sensorData.randomValue.ToString())));
 
+                //if ((sensorData.ultrasonic1 < 20) || (sensorData.ultrasonic2 < 20) || (sensorData.ultrasonic3 < 20))
+                //{
+                //    btnForward.Enabled = false;
+                //}
+
+                
                 //// Alınan veriyi sıfırlama
                 Array.Clear(receive, 0, receive.Length);
                 
@@ -263,14 +264,6 @@ namespace Control_Station
         private void timer2_Tick(object sender, EventArgs e)
         {
            button1.PerformClick();
-        }
-        private void timer3_Tick(object sender, EventArgs e)
-        {
-            
-
-
-
-
         }
 
 
@@ -308,6 +301,18 @@ namespace Control_Station
         }
 
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //axWindowsMediaPlayer1.URL = "http://192.168.137.160:2222";
+            axWindowsMediaPlayer1.URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+            axWindowsMediaPlayer1.Ctlcontrols.play();
+            
+        }
+
+
+
+
+
 
 
 
@@ -316,7 +321,7 @@ namespace Control_Station
         //##################                                    KEYBOARD CONTROL                                        #####################
         //###################################################################################################################################
         //###################################################################################################################################
-        
+
     }
     public class SensorData
     {
@@ -334,7 +339,5 @@ namespace Control_Station
         public int Speed_Data { get; set; }
         public int Distance_Data { get; set; }
         public int Turns_Data { get; set; }
-
     }
-
 }
