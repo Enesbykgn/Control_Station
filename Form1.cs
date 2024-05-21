@@ -47,6 +47,10 @@ namespace Control_Station
             //Application.DoEvents();
 
         }
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             groupBox1.Enabled = true;
@@ -54,7 +58,7 @@ namespace Control_Station
             try
             {
                 string message = "UPDATE";
-                SendJsonCommand(message, "NOMOVE", 0, 0, 0);
+                SendJsonCommand("AUTO", message, "NOMOVE", 0, 0, 0);
                 ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
                 //byte[] data = Encoding.ASCII.GetBytes(message);
                 //client.Send(data, data.Length, ip);
@@ -102,7 +106,7 @@ namespace Control_Station
                 ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
                 //byte[] data = Encoding.ASCII.GetBytes(message);
                 //client.Send(data, data.Length, ip);
-                SendJsonCommand("UPDATE", message, 40, 8, 0);
+                SendJsonCommand("AUTO","UPDATE", message, 40, 8, 0);
                
             }
             catch (Exception err)
@@ -122,7 +126,7 @@ namespace Control_Station
             try
             {
                 string message = "BACKWARD";
-                SendJsonCommand("UPDATE", message, 40, 8, 0);
+                SendJsonCommand("AUTO", "UPDATE", message, 40, 8, 0);
                 
             }
             catch (Exception err)
@@ -143,8 +147,8 @@ namespace Control_Station
             try
             {
                 string message = "STOP";
-                SendData(message);
-               
+                SendJsonCommand("AUTO", "UPDATE", message, 0, 0, 0);
+
             }
             catch (Exception err)
             {
@@ -160,7 +164,7 @@ namespace Control_Station
             try
             {
                 string message = "LEFT";
-                SendJsonCommand("UPDATE", message, 50, 0, 100);
+                SendJsonCommand("AUTO", "UPDATE", message, 50, 0, 100);
                 
             }
             catch (Exception err)
@@ -177,7 +181,7 @@ namespace Control_Station
             try
             {
                 string message = "RIGHT";
-                SendJsonCommand("UPDATE", message, 50, 0, 100);
+                SendJsonCommand("AUTO", "UPDATE", message, 50, 0, 100);
 
                 
             }
@@ -277,17 +281,18 @@ namespace Control_Station
 
             if (int.TryParse(textBox1.Text, out distance) && int.TryParse(textBox2.Text, out turns))
             {
-                SendJsonCommand(go, mov, speed, distance, turns);
+               // SendJsonCommand(go, mov, speed, distance, turns);
             }
             else
             {
                 MessageBox.Show("Please enter valid integers for distance and turns.");
             }
         }
-        private void SendJsonCommand(string updatedataInfo, string movementdataInfo, int speedDataInfo, int distanceDataInfo, int turnsDataInfo)
+        private void SendJsonCommand(string modedataInfo,string updatedataInfo, string movementdataInfo, int speedDataInfo, int distanceDataInfo, int turnsDataInfo)
         {
             RoverCommand command = new RoverCommand
             {
+                Mode_Data = modedataInfo,
                 Update_Data = updatedataInfo,
                 Movement_Data = movementdataInfo,
                 Speed_Data = speedDataInfo,
@@ -308,6 +313,18 @@ namespace Control_Station
             axWindowsMediaPlayer1.Ctlcontrols.play();
             
         }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            label11.Text = hScrollBar1.Value.ToString();
+        }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            Application.Restart();  
+        }
+
+
 
 
 
@@ -334,6 +351,7 @@ namespace Control_Station
     }
     public class RoverCommand
     {
+        public string Mode_Data { get; set; }
         public string Update_Data { get; set; }
         public string Movement_Data { get; set; }
         public int Speed_Data { get; set; }

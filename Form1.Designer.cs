@@ -56,6 +56,9 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btnRestart = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
@@ -316,11 +319,41 @@
             this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(1094, 313);
             this.axWindowsMediaPlayer1.TabIndex = 25;
             // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Location = new System.Drawing.Point(1149, 250);
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(326, 82);
+            this.hScrollBar1.TabIndex = 26;
+            this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(1247, 54);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(51, 16);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "label11";
+            // 
+            // btnRestart
+            // 
+            this.btnRestart.Location = new System.Drawing.Point(1311, 130);
+            this.btnRestart.Name = "btnRestart";
+            this.btnRestart.Size = new System.Drawing.Size(75, 51);
+            this.btnRestart.TabIndex = 28;
+            this.btnRestart.Text = "restart";
+            this.btnRestart.UseVisualStyleBackColor = true;
+            this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1055);
+            this.Controls.Add(this.btnRestart);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.textBox2);
@@ -368,6 +401,9 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
+        private System.Windows.Forms.HScrollBar hScrollBar1;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button btnRestart;
     }
 }
 
