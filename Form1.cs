@@ -23,8 +23,11 @@ namespace Control_Station
         System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
         UdpClient client = new UdpClient();
         //IPEndPoint ip = new IPEndPoint(IPAddress.Parse("192.168.137.70"), 5005); // Raspberry Pi'nin IP'si ve port numarası
-        IPEndPoint ip = new IPEndPoint(IPAddress.Parse("192.168.137.160"), 2222);
+        IPEndPoint ip = new IPEndPoint(IPAddress.Parse("192.168.137.57"), 2222);
         private bool listening = false;
+
+        public int distance,speed,angle = 0;
+        public int manualSpeed = 0;
         public Form1()
         {
 
@@ -53,8 +56,7 @@ namespace Control_Station
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            groupBox1.Enabled = true;
-            groupBox1 .Visible = true;  
+            
             try
             {
                 string message = "UPDATE";
@@ -79,44 +81,32 @@ namespace Control_Station
             //// Dinleme iş parçacığını başlat
             //Thread listenThread = new Thread(ListenForData);
             //listenThread.Start();
-            btnStop.Click += new EventHandler(btnStop_Click);
+            btnManualStop.Click += new EventHandler(btnStop_Click);
 
         }
 
-        private void SendData(string transferMessage)
-        {
-            byte[] data = Encoding.ASCII.GetBytes(transferMessage);
-            client.Send(data, data.Length, ip);
-        }
-
-
-        private void SendDataToEncoder(string transferMessage)
-        {
-            byte[] data = Encoding.ASCII.GetBytes(transferMessage);
-            client.Send(data, data.Length, ip);
-        }
+        //###################################################################################################################################
+        //###################################################################################################################################
+        //##################                                    Manual Mode                                             #####################
+        //###################################################################################################################################
+        //###################################################################################################################################
 
         private void btnForward_Click(object sender, EventArgs e)
         {
-            
+            manualSpeed = Convert.ToInt32(lblSpeedValue.Text);
+
+               
             try
             {
                 string message = "FORWARD";
-
-                ///***** Aşağıdaki 2 satırı fonksiyon yapıp thread ile çağırabilirsin ***///
-                //byte[] data = Encoding.ASCII.GetBytes(message);
-                //client.Send(data, data.Length, ip);
-                SendJsonCommand("AUTO","UPDATE", message, 40, 8, 0);
+                SendJsonCommand("Manual","UPDATE", message, manualSpeed, 8, 0);
                
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "FORWARD ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            //string messages = "GO";
-            //byte[] cmd = Encoding.ASCII.GetBytes(messages);
-            //client.Send(cmd, cmd.Length, ip);
-            //label12.Text = messages;
+
 
         }
 
@@ -126,28 +116,23 @@ namespace Control_Station
             try
             {
                 string message = "BACKWARD";
-                SendJsonCommand("AUTO", "UPDATE", message, 40, 8, 0);
+                SendJsonCommand("Manual", "UPDATE", message, manualSpeed, 8, 0);
                 
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "BACKWARD ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            //string messages = "GO";
-            //byte[] cmd = Encoding.ASCII.GetBytes(messages);
-            //client.Send(cmd, cmd.Length, ip);
-            //label12.Text = messages;
+
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            //string messages = "GO";
-            //byte[] cmd = Encoding.ASCII.GetBytes(messages);
-            //client.Send(cmd, cmd.Length, ip);
+
             try
             {
                 string message = "STOP";
-                SendJsonCommand("AUTO", "UPDATE", message, 0, 0, 0);
+                SendJsonCommand("Manual", "UPDATE", message, 0, 0, 0);
 
             }
             catch (Exception err)
@@ -157,14 +142,12 @@ namespace Control_Station
         }
         private void btnLeft_Click(object sender, EventArgs e)
         {
-            //string messages = "GO";
-            //byte[] cmd = Encoding.ASCII.GetBytes(messages);
-            //client.Send(cmd, cmd.Length, ip);
+ 
             
             try
             {
                 string message = "LEFT";
-                SendJsonCommand("AUTO", "UPDATE", message, 50, 0, 100);
+                SendJsonCommand("Manual", "UPDATE", message, 50, 0, 100);
                 
             }
             catch (Exception err)
@@ -181,7 +164,7 @@ namespace Control_Station
             try
             {
                 string message = "RIGHT";
-                SendJsonCommand("AUTO", "UPDATE", message, 50, 0, 100);
+                SendJsonCommand("Manual", "UPDATE", message, 50, 0, 100);
 
                 
             }
@@ -190,6 +173,105 @@ namespace Control_Station
                 MessageBox.Show(err.Message, "RIGHT ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+        //###################################################################################################################################
+        //###################################################################################################################################
+        //##################                                    Auto Mode                                               #####################
+        //###################################################################################################################################
+        //###################################################################################################################################
+
+        private void btnAutoForward_Click(object sender, EventArgs e)
+        {
+            distance = cmbBoxDistance.SelectedIndex;
+            speed = cmbBoxSpeed.SelectedIndex;
+            
+
+
+            try
+            {
+                string message = "FORWARD";
+
+               
+                SendJsonCommand("AUTO", "UPDATE", message, speed, distance , 0);
+
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "FORWARD ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
+        }
+
+        private void btnAutoLeft_Click(object sender, EventArgs e)
+        {
+            angle = cmbBoxAngle.SelectedIndex;
+            speed = cmbBoxSpeed.SelectedIndex;
+            try
+            {
+                string message = "LEFT";
+                SendJsonCommand("Auto", "UPDATE", message, speed, 0, angle);
+
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "LEFT ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAutoStop_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                string message = "STOP";
+                SendJsonCommand("Auto", "UPDATE", message, 0, 0, 0);
+
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "STOP ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAutoRight_Click(object sender, EventArgs e)
+        {
+            angle = cmbBoxAngle.SelectedIndex;
+            speed = cmbBoxSpeed.SelectedIndex;
+            try
+            {
+                string message = "RIGHT";
+                SendJsonCommand("Auto", "UPDATE", message, speed, 0, angle);
+
+
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "RIGHT ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAutoBackward_Click(object sender, EventArgs e)
+        {
+            distance = cmbBoxDistance.SelectedIndex;
+            speed = cmbBoxSpeed.SelectedIndex;
+            try
+            {
+                string message = "BACKWARD";
+                SendJsonCommand("Auto", "UPDATE", message, speed, distance, 0);
+
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message, "BACKWARD ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
+
+
         void f1(string sensorAdi)
         {
             label1.Invoke((MethodInvoker)(() => label1.Text = sensorAdi));
@@ -306,23 +388,79 @@ namespace Control_Station
         }
 
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //axWindowsMediaPlayer1.URL = "http://192.168.137.160:2222";
-            axWindowsMediaPlayer1.URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-            axWindowsMediaPlayer1.Ctlcontrols.play();
+        //private void button2_Click(object sender, EventArgs e)
+        //{
+        //    //axWindowsMediaPlayer1.URL = "http://192.168.137.160:2222";
+        //    axWindowsMediaPlayer1.URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+        //    axWindowsMediaPlayer1.Ctlcontrols.play();
             
-        }
+        //}
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            label11.Text = hScrollBar1.Value.ToString();
+            lblSpeedValue.Text = hScrollBar1.Value.ToString();
         }
 
         private void btnRestart_Click(object sender, EventArgs e)
         {
             Application.Restart();  
         }
+
+        private void btnManual_Click(object sender, EventArgs e)
+        {
+            this.groupBoxManual.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.groupBoxManual.Controls.Add(this.groupBox4);
+            this.groupBoxManual.Controls.Add(this.groupBoxControl);
+            this.groupBoxManual.Controls.Add(this.groupBoxSpeedandData);
+            this.groupBoxManual.Enabled = false;
+            this.groupBoxManual.Location = new System.Drawing.Point(14, 109);
+            this.groupBoxManual.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxManual.Name = "groupBoxManual";
+            this.groupBoxManual.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxManual.Size = new System.Drawing.Size(792, 273);
+            this.groupBoxManual.TabIndex = 32;
+            this.groupBoxManual.TabStop = false;
+            this.groupBoxManual.Text = "ManuelMode";
+            this.groupBoxManual.Visible = false;
+
+
+
+
+            groupBoxManual.Enabled = true;
+            groupBoxManual.Visible = true;
+            groupBoxAuto.Enabled = false;
+            groupBoxAuto.Visible = false;
+
+            btnManual.Enabled = false;
+            btnAuto.Enabled = true;
+            
+        }
+
+        private void btnAuto_Click(object sender, EventArgs e)
+        {
+        
+            this.groupBoxAuto.Enabled = false;
+            this.groupBoxAuto.Location = new System.Drawing.Point(14, 109);
+           // this.groupBoxAuto.Margin = new System.Windows.Forms.Padding(2);
+         
+           // this.groupBoxAuto.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxAuto.Size = new System.Drawing.Size(674, 390);
+            this.groupBoxAuto.TabIndex = 33;
+        
+            groupBoxAuto.Enabled = true;
+            groupBoxAuto.Visible = true;
+            btnAuto.Enabled = false;
+            btnManual.Enabled = true;
+            groupBoxManual.Enabled = false;
+            groupBoxManual.Visible = false;
+
+        }
+
+
+
+
+
+
 
 
 
